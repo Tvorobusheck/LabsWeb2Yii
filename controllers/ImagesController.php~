@@ -7,7 +7,9 @@ use app\models\Images;
 use app\models\ImagesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile; 
 
 /**
  * ImagesController implements the CRUD actions for Images model.
@@ -20,6 +22,22 @@ class ImagesController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index'],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -67,11 +85,18 @@ class ImagesController extends Controller
         $model = new Images();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+	   $somefile = UploadedFile::getInstance($model, 'filename');
+	   $model->save();
+	   $somefile->saveAs('upload/' . $somefile->baseName . '.' . $somefile->extension);
+	   $model->setAttributes(['filename3' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
+	   $model->filename = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
+	    $model->save();
+	    return $this->redirect(['view', 'id' => $model->id ]);
         }
 
         return $this->render('create', [
             'model' => $model,
+	    
         ]);
     }
 
@@ -86,8 +111,8 @@ class ImagesController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+	if ($model->load(Yii::$app->request->post()) && $model->save()) {
+	   return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -123,5 +148,13 @@ class ImagesController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    
+    public function beforeSave($insert): bool
+    {
+        $this->setAttribute('filename', 'hello333');
+ 
+        return parent::beforeSave($insert);
     }
 }

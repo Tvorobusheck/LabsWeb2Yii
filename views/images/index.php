@@ -29,6 +29,32 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'caption',
+	    
+/*        [
+            'attribute'=>'filename',
+            'label'=>'Picture',
+            'contentOptions' =>function ($model, $key, $index, $column){
+                return ['class' => 'name'];
+            },
+            'content'=>function($data){
+                $gv_image_path = $data['filename'];
+		var_dump($data);
+//		$gv_image_path = 'upload/shrek.jpg';
+		return Html::img($gv_image_path,
+
+                    ['width' => '100px']);
+            }
+        ],*/
+	 [ 
+         'label'=>"File",
+          
+         'attribute'=>'filename',
+         'headerOptions' => ['style' => 'width:20%; right=40px;'],
+
+
+         'format'=> 'image',
+	 ],
+
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

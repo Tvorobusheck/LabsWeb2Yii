@@ -13,6 +13,11 @@ use Yii;
  */
 class Images extends \yii\db\ActiveRecord
 {
+    public $filename;
+    public function getFilename(){
+    	   return 'upload/shrek.jpg';
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,6 +34,8 @@ class Images extends \yii\db\ActiveRecord
         return [
             [['name', 'caption'], 'required'],
             [['name', 'caption'], 'string', 'max' => 255],
+	    [['filename'], 'file'],
+	    
         ];
     }
 
@@ -39,10 +46,11 @@ class Images extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'File',
             'caption' => 'Caption',
         ];
     }
+    
 
     /**
      * {@inheritdoc}
@@ -52,4 +60,5 @@ class Images extends \yii\db\ActiveRecord
     {
         return new ImagesQuery(get_called_class());
     }
+
 }

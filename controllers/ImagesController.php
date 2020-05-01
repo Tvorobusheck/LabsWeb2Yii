@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile; 
 
 /**
  * ImagesController implements the CRUD actions for Images model.
@@ -83,12 +84,20 @@ class ImagesController extends Controller
     {
         $model = new Images();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+	   $somefile = UploadedFile::getInstance($model, 'filename');
+	   $model->save();
+	   $somefile->saveAs('upload/' . $somefile->baseName . '.' . $somefile->extension);
+	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
+	   $model->filename = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
+	    $model->save();
+	    $_POST['Images']['filename'] = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
+	    return $this->redirect(['view', 'id' => $model->id ]);
         }
 
         return $this->render('create', [
             'model' => $model,
+	    
         ]);
     }
 
@@ -103,8 +112,14 @@ class ImagesController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+	if ($model->load(Yii::$app->request->post()) && $model->save()) {
+	   $somefile = UploadedFile::getInstance($model, 'filename');
+	   $model->save();
+	   $somefile->saveAs('upload/' . $somefile->baseName . '.' . $somefile->extension);
+	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
+	   $model->filename = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
+	   $model->save();
+	   return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -141,4 +156,6 @@ class ImagesController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    
 }
