@@ -10,12 +10,17 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $caption
+ * @property string $filename
  */
 class Images extends \yii\db\ActiveRecord
 {
     public $filename;
+    public $useless;
     public function getFilename(){
     	   return 'upload/shrek.jpg';
+    }
+    public function setFilename($value){
+    	   $this->filename = 'upload/shrek.jpg';
     }
 
     /**
@@ -34,8 +39,8 @@ class Images extends \yii\db\ActiveRecord
         return [
             [['name', 'caption'], 'required'],
             [['name', 'caption'], 'string', 'max' => 255],
-	    [['filename'], 'file'],
-	    
+	    [['filename'], 'file', 'extensions' => 'png, jpg'],
+	    [['filename'], 'safe'],
         ];
     }
 
@@ -48,6 +53,7 @@ class Images extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'File',
             'caption' => 'Caption',
+	    'filename' => 'Filename',
         ];
     }
     
@@ -60,5 +66,6 @@ class Images extends \yii\db\ActiveRecord
     {
         return new ImagesQuery(get_called_class());
     }
+
 
 }

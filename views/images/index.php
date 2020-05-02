@@ -28,24 +28,33 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'caption',
+            [
+            'attribute'=>'caption',
+            'label'=>'Picture',
+            'contentOptions' =>function ($model, $key, $index, $column){
+                return ['class' => 'name'];
+            },
+            'content'=>function($data){
+                $caption = explode(';', $data['caption'])[1];
+		return $caption;
+            }
+        ],
 	    
-/*        [
+        [
             'attribute'=>'filename',
             'label'=>'Picture',
             'contentOptions' =>function ($model, $key, $index, $column){
                 return ['class' => 'name'];
             },
             'content'=>function($data){
-                $gv_image_path = $data['filename'];
-		var_dump($data);
-//		$gv_image_path = 'upload/shrek.jpg';
+                $gv_image_path = explode(';', $data['caption'])[0];
+//		var_dump($gv_image_path);
 		return Html::img($gv_image_path,
 
-                    ['width' => '100px']);
+                    ['height' => '200px']);
             }
-        ],*/
-	 [ 
+        ],
+/*	 [ 
          'label'=>"File",
           
          'attribute'=>'filename',
@@ -53,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
          'format'=> 'image',
-	 ],
+	 ],*/
 
 
             ['class' => 'yii\grid\ActionColumn'],

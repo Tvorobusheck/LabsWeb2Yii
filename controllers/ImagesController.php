@@ -86,12 +86,15 @@ class ImagesController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 	   $somefile = UploadedFile::getInstance($model, 'filename');
+	   $date = date_create();
+	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($date). '.' . $somefile->extension;
 	   $model->save();
-	   $somefile->saveAs('upload/' . $somefile->baseName . '.' . $somefile->extension);
+	   $somefile->saveAs($model->filename);
 	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
-	   $model->filename = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
+	   
+	    $model->save(false);
+	    $model->caption = $model->filename.';'.$model->caption;
 	    $model->save();
-	    $_POST['Images']['filename'] = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
 	    return $this->redirect(['view', 'id' => $model->id ]);
         }
 
@@ -114,11 +117,15 @@ class ImagesController extends Controller
 
 	if ($model->load(Yii::$app->request->post()) && $model->save()) {
 	   $somefile = UploadedFile::getInstance($model, 'filename');
+	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($data). '.' . $somefile->extension;
 	   $model->save();
-	   $somefile->saveAs('upload/' . $somefile->baseName . '.' . $somefile->extension);
+	   $somefile->saveAs($model->filename);
 	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
-	   $model->filename = 'upload/' . $somefile->baseName . '.' . $somefile->extension;
-	   $model->save();
+	   $data = date_create();
+	   
+	    $model->save(false);
+	    $model->caption = $model->filename.';'.$model->caption;
+	    $model->save();
 	   return $this->redirect(['view', 'id' => $model->id]);
         }
 
