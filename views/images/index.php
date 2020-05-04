@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
             'attribute'=>'caption',
-            'label'=>'Picture',
+            'label'=>'Caption',
             'contentOptions' =>function ($model, $key, $index, $column){
                 return ['class' => 'name'];
             },

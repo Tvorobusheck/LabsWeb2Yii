@@ -90,8 +90,7 @@ class ImagesController extends Controller
 	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($date). '.' . $somefile->extension;
 	   $model->save();
 	   $somefile->saveAs($model->filename);
-	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
-	   
+	   	   
 	    $model->save(false);
 	    $model->caption = $model->filename.';'.$model->caption;
 	    $model->save();
@@ -114,13 +113,12 @@ class ImagesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+	$model->caption = '';
 	if ($model->load(Yii::$app->request->post()) && $model->save()) {
 	   $somefile = UploadedFile::getInstance($model, 'filename');
 	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($data). '.' . $somefile->extension;
 	   $model->save();
 	   $somefile->saveAs($model->filename);
-	   $model->setAttributes(['filename' => 'upload/' . $somefile->baseName . '.' . $somefile->extension]);
 	   $data = date_create();
 	   
 	    $model->save(false);
