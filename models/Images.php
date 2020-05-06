@@ -17,7 +17,7 @@ class Images extends \yii\db\ActiveRecord
     public $filename;
     public $useless;
     public function getFilename(){
-    	   return 'upload/shrek.jpg';
+    	   return explode(';', $this->caption)[0];;
     }
     public function setFilename($value){
     	   $this->filename = 'upload/shrek.jpg';

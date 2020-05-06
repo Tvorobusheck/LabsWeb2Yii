@@ -24,7 +24,7 @@ class ImagesController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'askdelete'],
                 'rules' => [
                     [
                         'actions' => ['index'],
@@ -32,9 +32,29 @@ class ImagesController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index'],
-                        'allow' => false,
-                        'roles' => ['?'],
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['create'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['askdelete'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -70,8 +90,12 @@ class ImagesController extends Controller
      */
     public function actionView($id)
     {
+	$model = $this->findModel($id);
+	if (substr_count(explode(';', $model->caption)[0],
+	   Yii::$app->user->identity['login']) == 0)
+		return $this->redirect(['index']);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -87,7 +111,8 @@ class ImagesController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 	   $somefile = UploadedFile::getInstance($model, 'filename');
 	   $date = date_create();
-	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($date). '.' . $somefile->extension;
+	   $model->filename = 'upload/' . Yii::$app->user->identity['login'] . '/' .
+	   		    $somefile->baseName . date_timestamp_get($date). '.' . $somefile->extension;
 	   $model->save();
 	   $somefile->saveAs($model->filename);
 	   	   
@@ -113,10 +138,14 @@ class ImagesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+	if (substr_count(explode(';', $model->caption)[0],
+	   Yii::$app->user->identity['login']) == 0)
+		return $this->redirect(['index']);
 	$model->caption = '';
 	if ($model->load(Yii::$app->request->post()) && $model->save()) {
 	   $somefile = UploadedFile::getInstance($model, 'filename');
-	   $model->filename = 'upload/' . $somefile->baseName . date_timestamp_get($data). '.' . $somefile->extension;
+	   $model->filename = 'upload/' . Yii::$app->user->identity['login'] . '/' .
+	   		    $somefile->baseName . date_timestamp_get($data). '.' . $somefile->extension;
 	   $model->save();
 	   $somefile->saveAs($model->filename);
 	   $data = date_create();
@@ -139,11 +168,30 @@ class ImagesController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+    public function actionAskdelete($id)
+    {
+	$model = $this->findModel($id);
+	if (substr_count(explode(';', $model->caption)[0],
+	   Yii::$app->user->identity['login']) == 0)
+		return $this->redirect(['index']);
+        return $this->render('askdelete', [
+            'model' => $model,
+        ]);
+    }
+    
+    /**
+     * Deletes an existing Images model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+	$model = $this->findModel($id);
+        $model->delete();
+	return $this->redirect(['index']);
+        
     }
 
     /**

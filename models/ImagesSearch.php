@@ -5,6 +5,8 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Images;
+use yii\helpers\VarDumper;
+use Yii;
 
 /**
  * ImagesSearch represents the model behind the search form of `app\models\Images`.
@@ -60,9 +62,9 @@ class ImagesSearch extends Images
         $query->andFilterWhere([
             'id' => $this->id,
         ]);
-
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'caption', $this->caption]);
+            ->andFilterWhere(['like', 'caption', $this->caption])
+	    ->andFilterwhere(['like', 'caption', Yii::$app->user->identity['login']]);
 
         return $dataProvider;
     }
