@@ -20,7 +20,7 @@ class Images extends \yii\db\ActiveRecord
     	   return explode(';', $this->caption)[0];;
     }
     public function setFilename($value){
-    	   $this->filename = 'upload/shrek.jpg';
+    	   $this->filename = $values;
     }
 
     /**

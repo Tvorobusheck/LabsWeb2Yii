@@ -1,7 +1,20 @@
 <?php
+use app\tests\fixtures\UsersFixtures;
 
 class LoginFormCest
 {
+    public function fixtures()
+    {
+        return [
+            'profiles' => [
+	    	'class' => UsersFixtures::className(),
+		       
+                // fixture data located in tests/_data/user.php
+                'dataFile' => codecept_data_dir() . 'users.php'
+	    ],
+        ];
+    }
+
     public function _before(\FunctionalTester $I)
     {
         $I->amOnRoute('site/login');
@@ -13,21 +26,6 @@ class LoginFormCest
 
     }
 
-    // demonstrates `amLoggedInAs` method
-    public function internalLoginById(\FunctionalTester $I)
-    {
-        $I->amLoggedInAs(100);
-        $I->amOnPage('/');
-        $I->see('Logout (admin)');
-    }
-
-    // demonstrates `amLoggedInAs` method
-    public function internalLoginByInstance(\FunctionalTester $I)
-    {
-        $I->amLoggedInAs(\app\models\User::findByUsername('admin'));
-        $I->amOnPage('/');
-        $I->see('Logout (admin)');
-    }
 
     public function loginWithEmptyCredentials(\FunctionalTester $I)
     {
@@ -50,10 +48,16 @@ class LoginFormCest
     public function loginSuccessfully(\FunctionalTester $I)
     {
         $I->submitForm('#login-form', [
-            'LoginForm[username]' => 'admin',
-            'LoginForm[password]' => 'admin',
+            'LoginForm[username]' => 'demo',
+            'LoginForm[password]' => 'demo',
         ]);
-        $I->see('Logout (admin)');
+        $I->see('Logout (demo)');
         $I->dontSeeElement('form#login-form');              
+    }
+
+    
+    public function loginFixtures(\FunctionalTester $I)
+    {
+	$this->fixtures();
     }
 }
