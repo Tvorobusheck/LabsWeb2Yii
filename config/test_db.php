@@ -1,6 +1,17 @@
 <?php
-$db = require __DIR__ . '/db.php';
-// test database! Important not to run tests on production or development databases
-//$db['dsn'] = 'mysql:host=localhost;dbname=yii2_basic_tests';
 
-return $db;
+// require_once("/home/01/sarbaev/access.php");
+
+return [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=localhost;dbname=sarbaev',
+    'username' => 'sarbaev',
+    'password' => 'Yeb8aiBi',
+    'charset' => 'utf8',
+
+    // Schema cache options (for production environment)
+    //'enableSchemaCache' => true,
+    //'schemaCacheDuration' => 60,
+    //'schemaCache' => 'cache',
+];
+?>

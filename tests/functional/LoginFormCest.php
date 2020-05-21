@@ -1,20 +1,7 @@
 <?php
-use app\tests\fixtures\UsersFixtures;
 
 class LoginFormCest
 {
-    public function fixtures()
-    {
-        return [
-            'profiles' => [
-	    	'class' => UsersFixtures::className(),
-		       
-                // fixture data located in tests/_data/user.php
-                'dataFile' => codecept_data_dir() . 'users.php'
-	    ],
-        ];
-    }
-
     public function _before(\FunctionalTester $I)
     {
         $I->amOnRoute('site/login');
@@ -53,11 +40,5 @@ class LoginFormCest
         ]);
         $I->see('Logout (demo)');
         $I->dontSeeElement('form#login-form');              
-    }
-
-    
-    public function loginFixtures(\FunctionalTester $I)
-    {
-	$this->fixtures();
     }
 }
